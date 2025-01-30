@@ -1,0 +1,52 @@
+return {
+    'folke/zen-mode.nvim',
+    config = function()
+        -- Initial setup for Zen Mode
+        require('zen-mode').setup({
+            window = {
+                width = 120, -- Default width for Zen Mode
+                options = {
+                    signcolumn = "yes",
+                    number = true,
+                    relativenumber = true, 
+                    cursorline = true,
+                    cursorcolumn = true,
+                    foldcolumn = "0",
+                    list = false,
+                }
+            }
+        })
+
+        -- Keymap for standard Zen Mode (wide)
+        vim.keymap.set('n', '<leader>zz', function()
+            require('zen-mode').toggle()
+
+            vim.wo.wrap = false
+            vim.wo.number = false
+            vim.wo.relativenumber = false
+            vim.wo.colorcolumn = '0'
+
+            if ColorMyPencils then ColorMyPencils() end
+        end, {})
+
+        -- Keymap for compact Zen Mode
+        vim.keymap.set('n', '<leader>zZ', function()
+            require('zen-mode').setup({
+                window = {
+                    width = 80, -- Narrower width for focused work
+                    options = {} -- Custom options if needed
+                }
+            })
+
+            require('zen-mode').toggle()
+
+            vim.wo.wrap = false
+            vim.wo.number = true
+            vim.wo.relativenumber = true
+            vim.wo.colorcolumn = '0'
+
+            if ColorMyPencils then ColorMyPencils() end
+        end, {})
+    end
+}
+
