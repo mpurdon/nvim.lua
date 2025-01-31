@@ -1,5 +1,6 @@
 function ColorMyPencils()
-    vim.cmd.colorscheme("kanagawa-dragon") -- Explicitly set the Kanagawa Dragon variant
+    -- Explicitly set the Kanagawa Dragon variant
+    vim.cmd.colorscheme("kanagawa-dragon")
 
     -- Remove background for a more transparent look
     vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
@@ -30,8 +31,8 @@ return {
             },
         },
         background = {
-            dark = 'dragon',  -- Set dark mode to Dragon variant
-            light = 'lotus'   -- Keep light mode as Lotus
+            dark = 'dragon', -- Set dark mode to Dragon variant
+            light = 'lotus'  -- Keep light mode as Lotus
         },
     },
     config = function(_, opts)
@@ -39,4 +40,3 @@ return {
         ColorMyPencils() -- Apply the custom color tweaks
     end
 }
-
