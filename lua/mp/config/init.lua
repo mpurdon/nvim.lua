@@ -1,0 +1,5 @@
+require("mp.config.opts")
+require("mp.config.keymap")
+require("mp.config.lazy")
+require("mp.config.autocmds")
+require("mp.config.qol")
