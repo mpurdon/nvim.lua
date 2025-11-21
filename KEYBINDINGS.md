@@ -185,6 +185,22 @@
 | `<leader>xl` | Normal | Toggle location list |
 | `<leader>xt` | Normal | Toggle todos |
 
+## Debug (DAP)
+
+| Key | Mode | Action |
+|-----|------|--------|
+| `<leader>db` | Normal | Toggle breakpoint |
+| `<leader>dc` | Normal | Continue debugging |
+| `<leader>di` | Normal | Step into |
+| `<leader>do` | Normal | Step over |
+| `<leader>dO` | Normal | Step out |
+| `<leader>dr` | Normal | Toggle REPL |
+| `<leader>dl` | Normal | Run last debug configuration |
+| `<leader>du` | Normal | Toggle debug UI |
+| `<leader>dt` | Normal | Terminate debugging |
+| `<leader>df` | Normal | Peek function definition |
+| `<leader>dF` | Normal | Peek class definition |
+
 ## Completion (nvim-cmp)
 
 *Active only in insert mode when completion menu is open*
@@ -198,6 +214,81 @@
 | `<C-Space>` | Insert | Show completion suggestions |
 | `<C-e>` | Insert | Close completion menu |
 | `<CR>` | Insert | Confirm selection |
+
+## Treesitter
+
+### Incremental Selection
+
+| Key | Mode | Action |
+|-----|------|--------|
+| `<C-space>` | Normal | Init selection |
+| `<C-space>` | Visual | Increment selection |
+| `<bs>` | Visual | Decrement selection |
+
+### Text Objects - Select
+
+| Key | Mode | Action |
+|-----|------|--------|
+| `af` | Visual/Operator | Select outer function |
+| `if` | Visual/Operator | Select inner function |
+| `ac` | Visual/Operator | Select outer class |
+| `ic` | Visual/Operator | Select inner class |
+| `aa` | Visual/Operator | Select outer parameter |
+| `ia` | Visual/Operator | Select inner parameter |
+| `al` | Visual/Operator | Select outer loop |
+| `il` | Visual/Operator | Select inner loop |
+| `ai` | Visual/Operator | Select outer conditional |
+| `ii` | Visual/Operator | Select inner conditional |
+| `ab` | Visual/Operator | Select outer block |
+| `ib` | Visual/Operator | Select inner block |
+| `as` | Visual/Operator | Select outer statement |
+| `is` | Visual/Operator | Select inner statement |
+| `aC` | Visual/Operator | Select outer comment |
+| `iC` | Visual/Operator | Select inner comment |
+
+### Text Objects - Navigate
+
+| Key | Mode | Action |
+|-----|------|--------|
+| `]m` | Normal | Next function start |
+| `]M` | Normal | Next function end |
+| `[m` | Normal | Previous function start |
+| `[M` | Normal | Previous function end |
+| `]c` | Normal | Next class start |
+| `]C` | Normal | Next class end |
+| `[c` | Normal | Previous class start |
+| `[C` | Normal | Previous class end |
+| `]a` | Normal | Next parameter start |
+| `]A` | Normal | Next parameter end |
+| `[a` | Normal | Previous parameter start |
+| `[A` | Normal | Previous parameter end |
+| `]l` | Normal | Next loop start |
+| `]L` | Normal | Next loop end |
+| `[l` | Normal | Previous loop start |
+| `[L` | Normal | Previous loop end |
+| `]i` | Normal | Next conditional start |
+| `]I` | Normal | Next conditional end |
+| `[i` | Normal | Previous conditional start |
+| `[I` | Normal | Previous conditional end |
+| `]b` | Normal | Next block start |
+| `]B` | Normal | Next block end |
+| `[b` | Normal | Previous block start |
+| `[B` | Normal | Previous block end |
+| `]s` | Normal | Next statement start |
+| `]S` | Normal | Next statement end |
+| `[s` | Normal | Previous statement start |
+| `[S` | Normal | Previous statement end |
+
+### Text Objects - Swap
+
+| Key | Mode | Action |
+|-----|------|--------|
+| `<leader>a` | Normal | Swap with next parameter |
+| `<leader>A` | Normal | Swap with previous parameter |
+| `<leader>f` | Normal | Swap with next function |
+| `<leader>F` | Normal | Swap with previous function |
+| `<leader>c` | Normal | Swap with next class |
+| `<leader>C` | Normal | Swap with previous class |
 
 ## Comments
 

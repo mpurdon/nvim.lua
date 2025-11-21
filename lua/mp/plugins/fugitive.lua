@@ -19,7 +19,7 @@ return {
                     buffer = bufnr,
                     remap = false
                 }
-                vim.keymaps.set('n', '<leader>p', function()
+                vim.keymap.set('n', '<leader>p', function()
                     vim.cmd.Git('push')
                 end, opts)
 

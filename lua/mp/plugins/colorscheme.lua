@@ -10,7 +10,7 @@ end
 return {
     "EdenEast/nightfox.nvim",
     priority = 1000,
-    lazy=false,
+    lazy = false,
     opts = {
         compile = true,
         undercurl = true,
