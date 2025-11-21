@@ -27,10 +27,10 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
     spec = {
         { import = "mp.plugins" },
+        { import = "mp.plugins.lsp" },
     },
     install = { colorscheme = { "habamax" } },
     checker = { enabled = true },
     change_detection = { notify = false }
 })
 
-print("done loading lazy.nvim")

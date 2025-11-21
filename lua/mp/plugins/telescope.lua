@@ -1,8 +1,8 @@
 return {
     "nvim-telescope/telescope.nvim",
-    tag = "0.1.x",
+    tag = "0.1.8",
     dependencies = {
-        "plenary",
+        "nvim-lua/plenary.nvim",
         { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
         "nvim-tree/nvim-web-devicons",
     },
@@ -28,7 +28,8 @@ return {
 
         vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = "Telescope: Find files" })
         vim.keymap.set('n', '<leader>fg', builtin.git_files, { desc = "Telescope: Find files with git" })
-        vim.keymap.set('n', '<leader>fs', function()
+        vim.keymap.set('n', '<leader>fs', builtin.live_grep, { desc = "Telescope: Live grep" })
+        vim.keymap.set('n', '<leader>fS', function()
             builtin.grep_string({
                 search = vim.fn.input("Grep for: ")
             })

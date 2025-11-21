@@ -24,7 +24,7 @@ autocmd('TextYankPost', {
     callback = function()
         vim.highlight.on_yank({
             higroup = 'IncSearch', -- Use 'IncSearch' highlight group
-            timeout = 200           -- Highlight for 200ms
+            timeout = 200          -- Highlight for 200ms
         })
     end
 })
@@ -32,14 +32,7 @@ autocmd('TextYankPost', {
 -- Automatically trim trailing whitespace before saving a file
 autocmd({ 'BufWritePre' }, {
     group = augroup('TrimWhitespace', {}), -- Create and assign to 'TrimWhitespace' group
-    pattern = '*', -- Apply to all files
-    command = [[%s/\s\+$//e]] -- Strip trailing whitespace
+    pattern = '*',                         -- Apply to all files
+    command = [[%s/\s\+$//e]]              -- Strip trailing whitespace
 })
-
--- Configure NetRW (built-in file explorer)
-vim.g.netrw_browse_split = 0 -- Open files in the same window instead of splitting
-vim.g.netrw_banner = 0       -- Disable the NetRW banner
-vim.g.netrw_winsize = 25      -- Set NetRW window size to 25% of the screen
-
-print("done loading autocmds.lua")
 

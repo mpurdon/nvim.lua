@@ -28,58 +28,41 @@ keymap.set("n", "N", "Nzzzv", { desc = "Move to previous search result and cente
 -- Clear search highlights
 keymap.set("n", "<leader>nh", ":nohl<CR>", { desc = "Clear search highlights" })
 
--- Restart LSP
-keymap.set("n", "<leader>zig", "<cmd>LspRestart<cr>")
-
--- Insert a blank line below the current line and restore cursor position
-keymap.set("n", "<CR>", "o<Esc>k", { desc = "Insert blank line below" })
-
--- Insert a blank line above the current line and restore cursor position
-keymap.set("n", "<S-CR>", "O<Esc>j", { desc = "Insert blank line above" })
-
--- Start and stop "vim-with-me" (presumably for collaborative editing)
-keymap.set("n", "<leader>vwm", function()
-    require("vim-with-me").StartVimWithMe()
-end)
-keymap.set("n", "<leader>svwm", function()
-    require("vim-with-me").StopVimWithMe()
-end)
-
 -- Paste over selected text without overwriting the clipboard
-keymap.set("x", "<leader>p", [["_dP]])
+keymap.set("x", "<leader>p", [["_dP]], { desc = "Paste over selected text without overwriting the clipboard" })
 
 -- Copy to system clipboard
-keymap.set({ "n", "v" }, "<leader>y", [["+y"]]) -- Copy selection
-keymap.set("n", "<leader>Y", [["+Y"]])          -- Copy entire line
+keymap.set({ "n", "v" }, "<leader>y", [["+y]], { desc = "Copy selection" })
+keymap.set("n", "<leader>Y", [["+Y]], { desc = "Copy entire line" })
 
 -- Delete without copying to clipboard
-keymap.set({ "n", "v" }, "<leader>d", "\"_d")
+keymap.set({ "n", "v" }, "<leader>d", "\"_d", { desc = "Delete selection without copying to clipboard" })
 
 -- Remap Ctrl+C to behave like Escape in insert mode
-keymap.set("i", "<C-c>", "<Esc>")
+keymap.set("i", "<C-c>", "<Esc>", { desc = "Remap <C-c> to <Esc> in insert mode" })
 
 -- Disable the 'Q' key in normal mode (to prevent accidental Ex mode entry)
-keymap.set("n", "Q", "<nop>")
+keymap.set("n", "Q", "<nop>", { desc = "Disable 'Q' key in normal mode" })
 
 -- Open tmux sessionizer
-keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>")
+keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>", { desc = "Open tmux sessionizer" })
 
 -- Format buffer using LSP
-keymap.set("n", "<leader>f", vim.lsp.buf.format)
+keymap.set("n", "<leader>f", vim.lsp.buf.format, { desc = "Format buffer using LSP" })
 
 -- Navigate quickfix list with centering
-keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz") -- Next quickfix item
-keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz") -- Previous quickfix item
+keymap.set("n", "]q", "<cmd>cnext<CR>zz", { desc = "Go to the next quickfix item" })
+keymap.set("n", "[q", "<cmd>cprev<CR>zz", { desc = "Go to the previous quickfix item" })
 
 -- Navigate location list with centering
-keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz") -- Next location item
-keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz") -- Previous location item
+keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz", { desc = "Go to the next location item" })
+keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz", { desc = "Go to the previous location item" })
 
 -- Replace the word under cursor with prompt
-keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "Replace word under cursor" })
 
 -- Make current file executable
-keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
+keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true, desc = "Make current file executable" })
 
 -- Insert Go-style error handling snippets
 keymap.set("n", "<leader>ee", "oif err != nil {<CR>}<Esc>Oreturn err<Esc>")                                   -- Return error block
@@ -92,7 +75,6 @@ keymap.set("n", "<leader>mr", "<cmd>CellularAutomaton make_it_rain<CR>")
 
 -- Source (reload) Neovim configuration
 keymap.set("n", "<leader><leader>", function()
-    vim.cmd("so")
+  vim.cmd("so")
 end)
 
-print("Keymap configuration loaded")
