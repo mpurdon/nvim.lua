@@ -47,9 +47,6 @@ keymap.set("n", "Q", "<nop>", { desc = "Disable 'Q' key in normal mode" })
 -- Open tmux sessionizer
 keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>", { desc = "Open tmux sessionizer" })
 
--- Format buffer using LSP
-keymap.set("n", "<leader>f", vim.lsp.buf.format, { desc = "Format buffer using LSP" })
-
 -- Navigate quickfix list with centering
 keymap.set("n", "]q", "<cmd>cnext<CR>zz", { desc = "Go to the next quickfix item" })
 keymap.set("n", "[q", "<cmd>cprev<CR>zz", { desc = "Go to the previous quickfix item" })

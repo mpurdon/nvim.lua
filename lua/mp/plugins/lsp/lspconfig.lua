@@ -21,6 +21,12 @@ return {
         vim.api.nvim_create_autocmd("LspAttach", {
             group = vim.api.nvim_create_augroup("UserLspConfig", {}),
             callback = function(ev)
+                -- Enable inlay hints if supported
+                local client = vim.lsp.get_client_by_id(ev.data.client_id)
+                if client and client.server_capabilities.inlayHintProvider then
+                    vim.lsp.inlay_hint.enable(true, { bufnr = ev.buf })
+                end
+
                 -- Buffer local mappings.
                 -- See `:help vim.lsp.*` for documentation on any of the below functions
                 local opts = { buffer = ev.buf, silent = true }
@@ -64,6 +70,11 @@ return {
 
                 opts.desc = "Restart LSP"
                 keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts) -- mapping to restart lsp if necessary
+
+                opts.desc = "Toggle inlay hints"
+                keymap.set("n", "<leader>th", function()
+                    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+                end, opts)
             end,
         })
 
@@ -136,6 +147,39 @@ return {
                 lspconfig["ts_ls"].setup({
                     capabilities = capabilities,
                     root_dir = lspconfig.util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git"),
+                })
+            end,
+            ["gopls"] = function()
+                -- configure golang server
+                lspconfig["gopls"].setup({
+                    capabilities = capabilities,
+                    cmd = { "gopls" },
+                    filetypes = { "go", "gomod", "gowork", "gotmpl" },
+                    root_dir = lspconfig.util.root_pattern("go.work", "go.mod", ".git"),
+                    settings = {
+                        gopls = {
+                            completeUnimported = true,
+                            usePlaceholders = true,
+                            analyses = {
+                                unusedparams = true,
+                            },
+                        },
+                    },
+                })
+            end,
+            ["rust_analyzer"] = function()
+                -- configure rust server
+                lspconfig["rust_analyzer"].setup({
+                    capabilities = capabilities,
+                    filetypes = { "rust" },
+                    root_dir = lspconfig.util.root_pattern("Cargo.toml"),
+                    settings = {
+                        ["rust-analyzer"] = {
+                            cargo = {
+                                allFeatures = true,
+                            },
+                        },
+                    },
                 })
             end,
         })

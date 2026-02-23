@@ -6,11 +6,15 @@ A modern Neovim configuration with lazy loading, LSP support, debugging capabili
 
 - **Plugin Manager**: Lazy.nvim for fast startup and lazy loading
 - **Language Server**: Full LSP support with Mason for automatic installation
+- **Inlay Hints**: Native LSP inlay hints with end-of-line display option
+- **AI Copilot**: GitHub Copilot integration via copilot.lua
 - **Debugging**: nvim-dap with UI for Python, Go, JavaScript/TypeScript
 - **Fuzzy Finder**: Telescope with fzf integration
 - **Syntax Highlighting**: Treesitter with text objects
 - **Completion**: nvim-cmp with LSP integration
-- **Git Integration**: Git signs and fugitive
+- **Git Integration**: Git signs, fugitive, and Lazygit via Snacks
+- **Modern UI**: Snacks.nvim for better notifications, toggles, and utilities
+- **Better Diagnostics**: Tiny inline diagnostic for prettier error messages
 - **Status Line**: Lualine with custom theme
 - **File Explorer**: Netrw integration
 - **Theme**: Nightfox with transparent background
@@ -84,6 +88,7 @@ A modern Neovim configuration with lazy loading, LSP support, debugging capabili
 | `[d` | Previous diagnostic |
 | `]d` | Next diagnostic |
 | `<leader>rs` | Restart LSP |
+| `<leader>th` | Toggle inlay hints |
 
 ### Quickfix & Location Lists
 | Key | Description |
@@ -105,6 +110,39 @@ A modern Neovim configuration with lazy loading, LSP support, debugging capabili
 | `<leader>dl` | Run last debug config |
 | `<leader>du` | Toggle debug UI |
 | `<leader>dt` | Terminate debugging |
+
+### AI Copilot
+| Key | Description |
+|-----|-------------|
+| `<M-l>` | Accept Copilot suggestion |
+| `<M-]>` | Next Copilot suggestion |
+| `<M-[>` | Previous Copilot suggestion |
+| `<C-]>` | Dismiss Copilot suggestion |
+| `<M-CR>` | Open Copilot panel |
+
+### Snacks.nvim (Modern UI & Utils)
+| Key | Description |
+|-----|-------------|
+| `<leader>un` | Dismiss all notifications |
+| `<leader>bd` | Delete buffer |
+| `<leader>gg` | Open Lazygit |
+| `<leader>gb` | Git blame line |
+| `<leader>gB` | Git browse |
+| `<leader>gf` | Lazygit file history |
+| `<leader>gl` | Lazygit log |
+| `<leader>cR` | Rename file |
+| `<C-/>` | Toggle terminal |
+| `]]` | Next reference |
+| `[[` | Previous reference |
+| `<leader>us` | Toggle spelling |
+| `<leader>uw` | Toggle wrap |
+| `<leader>uL` | Toggle relative numbers |
+| `<leader>ud` | Toggle diagnostics |
+| `<leader>ul` | Toggle line numbers |
+| `<leader>uc` | Toggle conceal level |
+| `<leader>uT` | Toggle Treesitter |
+| `<leader>ub` | Toggle dark/light background |
+| `<leader>uh` | Toggle inlay hints |
 
 ### Treesitter Text Objects
 | Key | Description |
@@ -201,6 +239,13 @@ A modern Neovim configuration with lazy loading, LSP support, debugging capabili
 - **Trouble**: Quickfix and location list UI
 - **Comment**: Comment toggling
 - **Gitsigns**: Git integration
+- **Snacks.nvim**: Modern UI utilities, notifications, toggles, and integrations
+- **Tiny Inline Diagnostic**: Prettier diagnostic messages
+- **LSP Endhints**: Display inlay hints at end of line
+
+### AI & Productivity
+- **Copilot.lua**: GitHub Copilot integration with native Lua implementation
+- **Cellular Automaton**: Fun animations
 
 ### File Types Supported
 - Bash, C, C++, CSS, Go, HTML, JavaScript, JSON, Lua, Python, PHP, Rust, TypeScript, Vim, YAML
@@ -239,9 +284,9 @@ nvim/
 ## 🚀 Getting Started
 
 1. **Prerequisites**:
-   - Neovim 0.8.0+
+   - Neovim 0.10.0+ (required for native inlay hints)
    - Git
-   - Node.js (for some LSP servers)
+   - Node.js v22+ (for Copilot and some LSP servers)
    - Python 3 (for Python LSP)
 
 2. **Installation**:

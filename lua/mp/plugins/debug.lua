@@ -91,11 +91,34 @@ return {
             },
         }
 
+        -- Rust
+        dap.adapters.codelldb = {
+            type = 'server',
+            port = "${port}",
+            executable = {
+                command = vim.fn.stdpath('data') .. '/mason/bin/codelldb',
+                args = { "--port", "${port}" },
+            }
+        }
+
+        dap.configurations.rust = {
+            {
+                name = "Launch file",
+                type = "codelldb",
+                request = "launch",
+                program = function()
+                    return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+                end,
+                cwd = '${workspaceFolder}',
+                stopOnEntry = false,
+            },
+        }
+
         -- JavaScript/TypeScript
         dap.adapters.node2 = {
             type = "executable",
             command = "node",
-            args = { os.getenv("HOME") .. "/.local/share/nvim/mason/packages/node-debug2-adapter/out/src/nodeDebug.js" },
+            args = { vim.fn.stdpath("data") .. "/mason/packages/node-debug2-adapter/out/src/nodeDebug.js" },
         }
 
         dap.configurations.javascript = {
