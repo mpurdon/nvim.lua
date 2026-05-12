@@ -4,16 +4,9 @@ return {
     dependencies = {
         "hrsh7th/cmp-nvim-lsp",
         { "antosha417/nvim-lsp-file-operations", config = true },
-        { "folke/neodev.nvim",                   opts = {} },
     },
     config = function()
-        -- import lspconfig plugin
-        local lspconfig = require("lspconfig")
-
-        -- import mason_lspconfig plugin
-        local mason_lspconfig = require("mason-lspconfig")
-
-        -- import cmp-nvim-lsp plugin
+        -- cmp-nvim-lsp adds completion-related capabilities on top of the defaults
         local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
         local keymap = vim.keymap -- for conciseness
@@ -21,9 +14,9 @@ return {
         vim.api.nvim_create_autocmd("LspAttach", {
             group = vim.api.nvim_create_augroup("UserLspConfig", {}),
             callback = function(ev)
-                -- Enable inlay hints if supported
+                -- Enable inlay hints if the attached server supports them
                 local client = vim.lsp.get_client_by_id(ev.data.client_id)
-                if client and client.server_capabilities.inlayHintProvider then
+                if client and client:supports_method("textDocument/inlayHint") then
                     vim.lsp.inlay_hint.enable(true, { bufnr = ev.buf })
                 end
 
@@ -60,10 +53,10 @@ return {
                 keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts) -- show diagnostics for line
 
                 opts.desc = "Go to previous diagnostic"
-                keymap.set("n", "[d", vim.diagnostic.goto_prev, opts) -- jump to previous diagnostic in buffer
+                keymap.set("n", "[d", function() vim.diagnostic.jump({ count = -1, float = true }) end, opts) -- jump to previous diagnostic in buffer
 
                 opts.desc = "Go to next diagnostic"
-                keymap.set("n", "]d", vim.diagnostic.goto_next, opts) -- jump to next diagnostic in buffer
+                keymap.set("n", "]d", function() vim.diagnostic.jump({ count = 1, float = true }) end, opts) -- jump to next diagnostic in buffer
 
                 opts.desc = "Show documentation for what is under cursor"
                 keymap.set("n", "K", vim.lsp.buf.hover, opts) -- show documentation for what is under cursor
@@ -78,110 +71,97 @@ return {
             end,
         })
 
-        -- used to enable autocompletion (assign to every lsp server config)
-        local capabilities = cmp_nvim_lsp.default_capabilities()
+        -- Diagnostic UI: signs in the gutter (replaces the old sign_define loop)
+        vim.diagnostic.config({
+            severity_sort = true,
+            signs = {
+                text = {
+                    [vim.diagnostic.severity.ERROR] = " ",
+                    [vim.diagnostic.severity.WARN] = " ",
+                    [vim.diagnostic.severity.HINT] = "󰠠 ",
+                    [vim.diagnostic.severity.INFO] = " ",
+                },
+            },
+        })
 
-        -- Change the Diagnostic symbols in the sign column (gutter)
-        -- (not in youtube nvim video)
-        local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
-        for type, icon in pairs(signs) do
-            local hl = "DiagnosticSign" .. type
-            vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
-        end
+        -- Apply completion capabilities to every server (Neovim 0.11+ native config).
+        -- mason-lspconfig (v2) is responsible for `vim.lsp.enable()`-ing installed servers;
+        -- here we only layer on per-server overrides. nvim-lspconfig still ships the base
+        -- config for each server under its `lsp/` directory.
+        vim.lsp.config("*", {
+            capabilities = cmp_nvim_lsp.default_capabilities(),
+        })
 
-        mason_lspconfig.setup_handlers({
-            -- default handler for installed servers
-            function(server_name)
-                lspconfig[server_name].setup({
-                    capabilities = capabilities,
-                })
+        -- denols: only attach inside real Deno projects, and avoid the nested marker
+        -- table that nvim-lspconfig's lsp/denols.lua feeds to vim.fs.root (which crashes
+        -- on 0.12-dev builds whose vim.fs.find doesn't support nested markers yet).
+        vim.lsp.config("denols", {
+            root_dir = function(bufnr, on_dir)
+                local root = vim.fs.root(bufnr, { "deno.json", "deno.jsonc", "deno.lock" })
+                if root then
+                    on_dir(root)
+                end
             end,
-            ["svelte"] = function()
-                -- configure svelte server
-                lspconfig["svelte"].setup({
-                    capabilities = capabilities,
-                    on_attach = function(client, bufnr)
-                        vim.api.nvim_create_autocmd("BufWritePost", {
-                            pattern = { "*.js", "*.ts" },
-                            callback = function(ctx)
-                                -- Here use ctx.match instead of ctx.file
-                                client.notify("$/onDidChangeTsOrJsFile", { uri = ctx.match })
-                            end,
-                        })
+        })
+
+        -- svelte: notify the server when companion .js/.ts files change
+        vim.lsp.config("svelte", {
+            on_attach = function(client, _)
+                vim.api.nvim_create_autocmd("BufWritePost", {
+                    pattern = { "*.js", "*.ts" },
+                    callback = function(ctx)
+                        client:notify("$/onDidChangeTsOrJsFile", { uri = ctx.match })
                     end,
                 })
             end,
-            ["graphql"] = function()
-                -- configure graphql language server
-                lspconfig["graphql"].setup({
-                    capabilities = capabilities,
-                    filetypes = { "graphql", "gql", "svelte", "typescriptreact", "javascriptreact" },
-                })
-            end,
-            ["emmet_ls"] = function()
-                -- configure emmet language server
-                lspconfig["emmet_ls"].setup({
-                    capabilities = capabilities,
-                    filetypes = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "svelte" },
-                })
-            end,
-            ["lua_ls"] = function()
-                -- configure lua server (with special settings)
-                lspconfig["lua_ls"].setup({
-                    capabilities = capabilities,
-                    settings = {
-                        Lua = {
-                            -- make the language server recognize "vim" global
-                            diagnostics = {
-                                globals = { "vim" },
-                            },
-                            completion = {
-                                callSnippet = "Replace",
-                            },
-                        },
+        })
+
+        -- graphql: also activate inside framework files that embed GraphQL
+        vim.lsp.config("graphql", {
+            filetypes = { "graphql", "gql", "svelte", "typescriptreact", "javascriptreact" },
+        })
+
+        -- emmet: broaden the filetypes emmet completions kick in for
+        vim.lsp.config("emmet_ls", {
+            filetypes = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "svelte" },
+        })
+
+        -- lua_ls: recognize the `vim` global and prefer Replace-style call snippets
+        vim.lsp.config("lua_ls", {
+            settings = {
+                Lua = {
+                    diagnostics = {
+                        globals = { "vim" },
                     },
-                })
-            end,
-            ["ts_ls"] = function()
-                -- configure typescript server
-                lspconfig["ts_ls"].setup({
-                    capabilities = capabilities,
-                    root_dir = lspconfig.util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git"),
-                })
-            end,
-            ["gopls"] = function()
-                -- configure golang server
-                lspconfig["gopls"].setup({
-                    capabilities = capabilities,
-                    cmd = { "gopls" },
-                    filetypes = { "go", "gomod", "gowork", "gotmpl" },
-                    root_dir = lspconfig.util.root_pattern("go.work", "go.mod", ".git"),
-                    settings = {
-                        gopls = {
-                            completeUnimported = true,
-                            usePlaceholders = true,
-                            analyses = {
-                                unusedparams = true,
-                            },
-                        },
+                    completion = {
+                        callSnippet = "Replace",
                     },
-                })
-            end,
-            ["rust_analyzer"] = function()
-                -- configure rust server
-                lspconfig["rust_analyzer"].setup({
-                    capabilities = capabilities,
-                    filetypes = { "rust" },
-                    root_dir = lspconfig.util.root_pattern("Cargo.toml"),
-                    settings = {
-                        ["rust-analyzer"] = {
-                            cargo = {
-                                allFeatures = true,
-                            },
-                        },
+                },
+            },
+        })
+
+        -- gopls
+        vim.lsp.config("gopls", {
+            settings = {
+                gopls = {
+                    completeUnimported = true,
+                    usePlaceholders = true,
+                    analyses = {
+                        unusedparams = true,
                     },
-                })
-            end,
+                },
+            },
+        })
+
+        -- rust_analyzer
+        vim.lsp.config("rust_analyzer", {
+            settings = {
+                ["rust-analyzer"] = {
+                    cargo = {
+                        allFeatures = true,
+                    },
+                },
+            },
         })
     end,
 }

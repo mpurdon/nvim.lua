@@ -1,3 +1,4 @@
+require("mp.config.compat")
 require("mp.config.globals")
 require("mp.config.opts")
 require("mp.config.keymap")
